@@ -1,10 +1,12 @@
 package com.kashifminhaj.kmusic.ui;
 
+import java.io.Serializable;
+
 /**
  * Created by kashif on 11/12/16.
  */
 
-public class SongItem {
+public class SongItem implements Serializable{
 
 
     private String path;
@@ -26,4 +28,6 @@ public class SongItem {
     public String getPath() {
         return path;
     }
+
+
 }
