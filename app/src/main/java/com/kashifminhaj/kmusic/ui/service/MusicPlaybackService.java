@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.kashifminhaj.kmusic.ui.SongItem;
+import com.kashifminhaj.kmusic.ui.util.Common;
 
 import java.io.IOException;
 
@@ -21,7 +22,10 @@ public class MusicPlaybackService extends Service {
     private final IBinder mBinder = new MyBinder();
     private MediaPlayer mAudioPlayer;
     private Context mContext;
+    private Common mApp;
    // private SongItem currSong;
+
+    private PreparedListner mPreparedListener;
 
     public MusicPlaybackService() {
     }
@@ -41,15 +45,24 @@ public class MusicPlaybackService extends Service {
         return mBinder;
     }
 
-//    @Override
-//    public int onStartCommand(Intent intent, int flags, int startId) {
-//        super.onStartCommand(intent, flags, startId);
-//
-//        Log.d(LOGTAG, "Yay! Music service started...");
-//        mAudioPlayer = new MediaPlayer(); // initialize our MediaPlayer
-//
-//        return START_STICKY;
-//    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        Log.d(LOGTAG, "onStartCommand: Yay! Music service started...");
+        mAudioPlayer = new MediaPlayer(); // initialize our MediaPlayer
+        mApp = (Common) getApplicationContext();
+        mApp.setService(this);
+        mApp.setIsServiceRunning(true);
+
+
+        setPreparedListener(mApp.getPlaybackStarter());
+        mPreparedListener.onServiceRunning(this);
+
+
+        return START_STICKY;
+    }
+
 
 
     @Override
@@ -96,5 +109,13 @@ public class MusicPlaybackService extends Service {
 
     public boolean isSongPlaying(){
         return mAudioPlayer.isPlaying();
+    }
+
+    public void setPreparedListener(PreparedListner mPreparedListener) {
+        this.mPreparedListener = mPreparedListener;
+    }
+
+    public interface PreparedListner {
+        public void onServiceRunning(MusicPlaybackService playbackService);
     }
 }

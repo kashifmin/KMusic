@@ -1,11 +1,7 @@
 package com.kashifminhaj.kmusic.ui.activity;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,11 +20,12 @@ import com.kashifminhaj.kmusic.ui.SongItem;
 import com.kashifminhaj.kmusic.ui.fragment.SongsFragment;
 import com.kashifminhaj.kmusic.ui.helper.SongDBHelper;
 import com.kashifminhaj.kmusic.ui.service.MusicPlaybackService;
+import com.kashifminhaj.kmusic.ui.util.Common;
 
 import java.io.IOException;
-import java.io.Serializable;
 
-public class MyMusicActivity extends AppCompatActivity implements SongsFragment.OnListFragmentInteractionListener {
+public class MyMusicActivity extends AppCompatActivity implements
+        SongsFragment.OnListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -49,6 +46,8 @@ public class MyMusicActivity extends AppCompatActivity implements SongsFragment.
     private RelativeLayout currPlayingLayout;
 
     private SongDBHelper mSongDBHelper;
+
+    private Common mApp;
 
     private MusicPlaybackService mPlayerService;
     private boolean mIsPlayerServiceBound;
@@ -82,15 +81,14 @@ public class MyMusicActivity extends AppCompatActivity implements SongsFragment.
 //            }
 //        });
 
-        if(savedInstanceState != null && savedInstanceState.containsKey("PlaybackService")) {
-            mPlayerService = (MusicPlaybackService) savedInstanceState.getSerializable("PlaybackService");
-        } else {
-            doBindService();
-        }
+
 
 
         mSongDBHelper = new SongDBHelper(this);
 
+        mApp = (Common) getApplicationContext();
+        if(!mApp.isServiceRunning())
+            startService(new Intent(this, MusicPlaybackService.class));
 
 
 
@@ -115,14 +113,13 @@ public class MyMusicActivity extends AppCompatActivity implements SongsFragment.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        doUnbindService();
+
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable("PlaybackService",(Serializable) mPlayerService);
     }
 
     @Override
@@ -150,6 +147,9 @@ public class MyMusicActivity extends AppCompatActivity implements SongsFragment.
     @Override
     public void onListFragmentInteraction(SongItem item) {
         // TODO: play this song
+        if(mPlayerService == null) {
+            mPlayerService = mApp.getService();
+        }
         try {
             if(!mPlayerService.isSongPlaying()) {
                 mPlayerService.playSong(item);
@@ -164,7 +164,6 @@ public class MyMusicActivity extends AppCompatActivity implements SongsFragment.
             e.printStackTrace();
         }
     }
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -207,43 +206,5 @@ public class MyMusicActivity extends AppCompatActivity implements SongsFragment.
         }
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // This is called when the connection with the service has been
-            // established, giving us the service object we can use to
-            // interact with the service.  Because we have bound to a explicit
-            // service that we know is running in our own process, we can
-            // cast its IBinder to a concrete class and directly access it.
-            mPlayerService = ((MusicPlaybackService.MyBinder) service).getService();
-
-
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            // Because it is running in our same process, we should never
-            // see this happen.
-            mPlayerService = null;
-        }
-    };
-
-    void doBindService() {
-        // Establish a connection with the service.  We use an explicit
-        // class name because we want a specific service implementation that
-        // we know will be running in our own process (and thus won't be
-        // supporting component replacement by other applications).
-        bindService(new Intent(MyMusicActivity.this,
-                MusicPlaybackService.class), mConnection, Context.BIND_AUTO_CREATE);
-        mIsPlayerServiceBound = true;
-    }
-
-    void doUnbindService() {
-        if (mIsPlayerServiceBound) {
-            // Detach our existing connection.
-            unbindService(mConnection);
-            mIsPlayerServiceBound = false;
-        }
-    }
 
 }
