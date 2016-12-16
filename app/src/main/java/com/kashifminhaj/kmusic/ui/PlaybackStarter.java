@@ -1,6 +1,7 @@
 package com.kashifminhaj.kmusic.ui;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.kashifminhaj.kmusic.ui.service.MusicPlaybackService;
 import com.kashifminhaj.kmusic.ui.util.Common;
@@ -20,6 +21,8 @@ public class PlaybackStarter implements MusicPlaybackService.PreparedListner {
 
     public PlaybackStarter(Context context) {
         mContext = context;
+
+        context.startService(new Intent(context, MusicPlaybackService.class));
     }
 
 

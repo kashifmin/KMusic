@@ -1,6 +1,5 @@
 package com.kashifminhaj.kmusic.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -87,8 +86,7 @@ public class MyMusicActivity extends AppCompatActivity implements
         mSongDBHelper = new SongDBHelper(this);
 
         mApp = (Common) getApplicationContext();
-        if(!mApp.isServiceRunning())
-            startService(new Intent(this, MusicPlaybackService.class));
+
 
 
 
