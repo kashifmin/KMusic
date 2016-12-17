@@ -14,7 +14,7 @@ import com.kashifminhaj.kmusic.ui.util.Common;
  * in our Common class.
  */
 
-public class PlaybackStarter implements MusicPlaybackService.PreparedListner {
+public class PlaybackStarter implements MusicPlaybackService.PreparedListener {
 
     private Context mContext;
     private Common mApp;

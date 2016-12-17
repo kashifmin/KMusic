@@ -26,7 +26,7 @@ public class MusicPlaybackService extends Service {
     private boolean mIsPlayerPrepared = false;
    // private SongItem currSong;
 
-    private PreparedListner mPreparedListener;
+    private PreparedListener mPreparedListener;
 
     public MusicPlaybackService() {
     }
@@ -126,12 +126,12 @@ public class MusicPlaybackService extends Service {
         }
     }
 
-    public void setPreparedListener(PreparedListner mPreparedListener) {
+    public void setPreparedListener(PreparedListener mPreparedListener) {
         this.mPreparedListener = mPreparedListener;
     }
 
-    public interface PreparedListner {
-        public void onServiceRunning(MusicPlaybackService playbackService);
+    public interface PreparedListener {
+        void onServiceRunning(MusicPlaybackService playbackService);
     }
 
     public boolean isPlayerPrepared() {
