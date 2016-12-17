@@ -15,7 +15,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kashifminhaj.kmusic.R;
+import com.kashifminhaj.kmusic.ui.AlbumItem;
 import com.kashifminhaj.kmusic.ui.SongItem;
+import com.kashifminhaj.kmusic.ui.fragment.AlbumsFragment;
 import com.kashifminhaj.kmusic.ui.fragment.SongsFragment;
 import com.kashifminhaj.kmusic.ui.helper.SongDBHelper;
 import com.kashifminhaj.kmusic.ui.service.MusicPlaybackService;
@@ -24,7 +26,8 @@ import com.kashifminhaj.kmusic.ui.util.Common;
 import java.io.IOException;
 
 public class MyMusicActivity extends AppCompatActivity implements
-        SongsFragment.OnListFragmentInteractionListener {
+        SongsFragment.OnListFragmentInteractionListener,
+        AlbumsFragment.OnListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -49,8 +52,6 @@ public class MyMusicActivity extends AppCompatActivity implements
     private Common mApp;
 
     private MusicPlaybackService mPlayerService;
-    private boolean mIsPlayerServiceBound;
-
 
 
     @Override
@@ -86,9 +87,6 @@ public class MyMusicActivity extends AppCompatActivity implements
         mSongDBHelper = new SongDBHelper(this);
 
         mApp = (Common) getApplicationContext();
-
-
-
 
 
 
@@ -163,6 +161,11 @@ public class MyMusicActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onListFragmentInteraction(AlbumItem item) {
+
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -180,6 +183,8 @@ public class MyMusicActivity extends AppCompatActivity implements
             switch(position) {
                 case 0:
                     return SongsFragment.newInstance(1, mSongDBHelper.getAllSongsList());
+                case 1:
+                    return AlbumsFragment.newInstance(2, mSongDBHelper.getAllAlbumsList());
             }
             return SongsFragment.newInstance(1, mSongDBHelper.getAllSongsList());
         }
