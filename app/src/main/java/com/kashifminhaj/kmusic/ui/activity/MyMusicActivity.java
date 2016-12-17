@@ -1,5 +1,6 @@
 package com.kashifminhaj.kmusic.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -110,6 +111,14 @@ public class MyMusicActivity extends AppCompatActivity implements
             }
         });
 
+        currSongTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyMusicActivity.this, NowPlayingActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,6 +193,7 @@ public class MyMusicActivity extends AppCompatActivity implements
             }
             animatePlayToPause();
             currSongTitle.setText(item.getTitle());
+            mApp.setNowPlayingSong(item);
         } catch (IOException e) {
             e.printStackTrace();
         }

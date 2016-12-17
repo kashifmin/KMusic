@@ -13,12 +13,14 @@ public class SongItem implements Serializable{
     private long id;
     private String title;
     private String artist;
+    private long albumId;
 
-    public SongItem(long songId, String songTitle, String songArtist, String songPath) {
+    public SongItem(long songId, String songTitle, String songArtist, String songPath, long songAlbumId) {
         id=songId;
         title = songTitle;
         artist = songArtist;
         path = songPath;
+        albumId = songAlbumId;
     }
 
     public long getID(){return id;}
@@ -29,5 +31,7 @@ public class SongItem implements Serializable{
         return path;
     }
 
-
+    public long getAlbumId() {
+        return albumId;
+    }
 }

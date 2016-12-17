@@ -1,6 +1,7 @@
 package com.kashifminhaj.kmusic.ui.helper;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -41,14 +42,17 @@ public class SongDBHelper {
                     (android.provider.MediaStore.Audio.Media.ARTIST);
             int pathColumn = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.DATA);
+            int albumIdColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.ALBUM_ID);
             //add songs to list
             do {
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
                 String thisPath = musicCursor.getString(pathColumn);
+                long thisAlbum = musicCursor.getLong(albumIdColumn);
 
-                songList.add(new SongItem(thisId, thisTitle, thisArtist, thisPath ));
+                songList.add(new SongItem(thisId, thisTitle, thisArtist, thisPath, thisAlbum));
             }
             while (musicCursor.moveToNext());
         }
@@ -90,6 +94,30 @@ public class SongDBHelper {
         musicCursor.close();
         return albumList;
 
+    }
+
+/*    public String getAlbumArtForSong(long albumId){
+        String artUri = null;
+        ContentResolver musicResolver = mContext.getContentResolver();
+        Uri musicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.AlbumColumns._+ " = ?";
+        Cursor musicCursor = musicResolver.query(musicUri, null, selection, new String[]{ String.valueOf(albumId) }, null);
+
+        if(musicCursor!=null && musicCursor.moveToFirst()){
+            Log.d("SongDBHelper", "Cursor not empty");
+            //get columns
+            int artColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.AlbumColumns.ALBUM_ART);
+            //add songs to list
+            artUri = musicCursor.getString(artColumn);
+        }
+        musicCursor.close();
+        return artUri;
+    }*/
+
+    public Uri getAlbumArtForSong(long albumId){
+        final Uri uri = Uri.parse("content://media/external/audio/albumart");
+        return ContentUris.withAppendedId(uri, albumId);
     }
 
 

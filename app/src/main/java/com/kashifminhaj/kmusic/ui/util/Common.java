@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.kashifminhaj.kmusic.ui.PlaybackStarter;
+import com.kashifminhaj.kmusic.ui.SongItem;
 import com.kashifminhaj.kmusic.ui.service.MusicPlaybackService;
 
 /**
@@ -19,6 +20,8 @@ public class Common extends Application {
     private MusicPlaybackService mService;
     private boolean mIsServiceRunning = false;
     private PlaybackStarter mPlaybackStarter;
+    private SongItem mNowPlayingSong;
+
 
     @Override
     public void onCreate() {
@@ -47,5 +50,13 @@ public class Common extends Application {
 
     public PlaybackStarter getPlaybackStarter() {
         return mPlaybackStarter;
+    }
+
+    public SongItem getNowPlayingSong() {
+        return mNowPlayingSong;
+    }
+
+    public void setNowPlayingSong(SongItem mNowPlayingSong) {
+        this.mNowPlayingSong = mNowPlayingSong;
     }
 }
