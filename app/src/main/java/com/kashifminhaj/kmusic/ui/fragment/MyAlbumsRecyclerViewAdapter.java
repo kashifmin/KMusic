@@ -12,15 +12,9 @@ import android.widget.TextView;
 import com.kashifminhaj.kmusic.R;
 import com.kashifminhaj.kmusic.ui.AlbumItem;
 import com.kashifminhaj.kmusic.ui.fragment.AlbumsFragment.OnListFragmentInteractionListener;
-import com.kashifminhaj.kmusic.ui.fragment.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyAlbumsRecyclerViewAdapter extends RecyclerView.Adapter<MyAlbumsRecyclerViewAdapter.ViewHolder> {
 
     private final List<AlbumItem> mValues;

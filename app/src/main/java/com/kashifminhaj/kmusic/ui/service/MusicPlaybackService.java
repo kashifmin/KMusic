@@ -23,6 +23,7 @@ public class MusicPlaybackService extends Service {
     private MediaPlayer mAudioPlayer;
     private Context mContext;
     private Common mApp;
+    private boolean mIsPlayerPrepared = false;
    // private SongItem currSong;
 
     private PreparedListner mPreparedListener;
@@ -77,6 +78,7 @@ public class MusicPlaybackService extends Service {
         mAudioPlayer.reset();
         mAudioPlayer.setDataSource(newSong.getPath());
         mAudioPlayer.prepare();
+        mIsPlayerPrepared = true;
         mAudioPlayer.start();
     //    currSong = newSong;
 
@@ -94,11 +96,13 @@ public class MusicPlaybackService extends Service {
         if(mAudioPlayer.isPlaying()) {
             mAudioPlayer.stop();
             mAudioPlayer.release();
+            mIsPlayerPrepared = false;
         }
     }
 
     public void resetPlayer() {
         mAudioPlayer.reset();
+        mIsPlayerPrepared = false;
     }
 
     public void resumeSong() {
@@ -111,11 +115,26 @@ public class MusicPlaybackService extends Service {
         return mAudioPlayer.isPlaying();
     }
 
+    public void togglePlaybackState() {
+        if(!mIsPlayerPrepared) {
+            return;
+        }
+        if(mAudioPlayer.isPlaying()) {
+            mAudioPlayer.pause();
+        } else {
+            mAudioPlayer.start();
+        }
+    }
+
     public void setPreparedListener(PreparedListner mPreparedListener) {
         this.mPreparedListener = mPreparedListener;
     }
 
     public interface PreparedListner {
         public void onServiceRunning(MusicPlaybackService playbackService);
+    }
+
+    public boolean isPlayerPrepared() {
+        return mIsPlayerPrepared;
     }
 }

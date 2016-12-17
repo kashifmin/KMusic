@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,6 +47,8 @@ public class MyMusicActivity extends AppCompatActivity implements
 
     private TextView currSongTitle;
     private RelativeLayout currPlayingLayout;
+
+    private ImageButton mPlayPauseButton;
 
     private SongDBHelper mSongDBHelper;
 
@@ -95,12 +98,36 @@ public class MyMusicActivity extends AppCompatActivity implements
         // get a reference for current song info displayed at the bottom
         currPlayingLayout = (RelativeLayout) findViewById(R.id.curr_play_layout);
 
+        mPlayPauseButton = (ImageButton) findViewById(R.id.main_play_pauseBtn);
+
         currPlayingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Here we launch a new activity that has main playback controls
                 // like play/pause, next, previous etc
 
+
+            }
+        });
+
+        mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mPlayerService == null) {
+                    // ignore the click if the service is not initialized yet!
+                    mPlayerService = mApp.getService();
+                }
+                if(!mPlayerService.isPlayerPrepared()) {
+                    // if the song is not playing or paused then we just ignore for now
+                    // TODO: play the song from last execution of the app
+                    return;
+                }
+                if(mPlayerService.isSongPlaying()) {
+                    animatePauseToPlay();
+                } else {
+                    animatePlayToPause();
+                }
+                mPlayerService.togglePlaybackState();
             }
         });
 
@@ -155,6 +182,7 @@ public class MyMusicActivity extends AppCompatActivity implements
                 mPlayerService.resetPlayer();
                 mPlayerService.playSong(item);
             }
+            animatePlayToPause();
             currSongTitle.setText(item.getTitle());
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,6 +235,15 @@ public class MyMusicActivity extends AppCompatActivity implements
             }
             return null;
         }
+    }
+
+    private void animatePlayToPause() {
+        // TODO: Add real animation!
+        mPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_filled_white_48dp);
+    }
+
+    private void animatePauseToPlay() {
+        mPlayPauseButton.setImageResource(R.drawable.ic_play_circle_filled_white_48dp);
     }
 
 
