@@ -1,5 +1,7 @@
 package com.kashifminhaj.kmusic.ui.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,10 +21,12 @@ public class MyAlbumsRecyclerViewAdapter extends RecyclerView.Adapter<MyAlbumsRe
 
     private final List<AlbumItem> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private final Context mContext;
 
-    public MyAlbumsRecyclerViewAdapter(List<AlbumItem> items, OnListFragmentInteractionListener listener) {
+    public MyAlbumsRecyclerViewAdapter(Context context, List<AlbumItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+        mContext = context;
     }
 
     @Override
@@ -37,11 +41,19 @@ public class MyAlbumsRecyclerViewAdapter extends RecyclerView.Adapter<MyAlbumsRe
         holder.mItem = mValues.get(position);
         holder.mTitleView.setText(holder.mItem.getName());
         holder.mCountView.setText(String.valueOf(holder.mItem.getNumOfSongs()));
-        try {
-            holder.mArtView.setImageURI(Uri.parse(holder.mItem.getThumbnail()));
-        } catch (Exception e) {
-            Log.d("adapter: ", e.getMessage());
-        }
+
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //Code for the UiThread
+                try {
+                    holder.mArtView.setImageURI(Uri.parse(holder.mItem.getThumbnail()));
+                } catch (Exception e) {
+                    Log.d("adapter: ", e.getMessage());
+                }
+            }
+        });
+
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

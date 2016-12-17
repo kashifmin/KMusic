@@ -57,6 +57,8 @@ public class AlbumsFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             mAlbumsList = (List<AlbumItem>) getArguments().getSerializable("albums");
         }
+
+       ;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class AlbumsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyAlbumsRecyclerViewAdapter(mAlbumsList, mListener));
+            recyclerView.setAdapter(new MyAlbumsRecyclerViewAdapter(context, mAlbumsList, mListener));
         }
         return view;
     }
