@@ -3,6 +3,9 @@
  */
 package com.kashifminhaj.kmusic.ui.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +13,11 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
 
+import com.kashifminhaj.kmusic.R;
 import com.kashifminhaj.kmusic.ui.SongItem;
+import com.kashifminhaj.kmusic.ui.activity.NowPlayingActivity;
 import com.kashifminhaj.kmusic.ui.util.Common;
 
 import java.io.IOException;
@@ -55,6 +61,7 @@ public class MusicPlaybackService extends Service {
         mApp = (Common) getApplicationContext();
         mApp.setService(this);
         mApp.setIsServiceRunning(true);
+        mContext = mApp.getApplicationContext();
 
 
         setPreparedListener(mApp.getPlaybackStarter());
@@ -81,6 +88,7 @@ public class MusicPlaybackService extends Service {
         mIsPlayerPrepared = true;
         mAudioPlayer.start();
     //    currSong = newSong;
+        showNotification(newSong);
 
     }
 
@@ -136,5 +144,38 @@ public class MusicPlaybackService extends Service {
 
     public boolean isPlayerPrepared() {
         return mIsPlayerPrepared;
+    }
+
+    public void showNotification(SongItem songItem) {
+        // TODO: Implement custom views fully and make the buttons work!
+
+        Intent intent = new Intent(mContext, NowPlayingActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(mContext.getApplicationContext(), 0, intent, 0);
+
+        /* A custom view for our notification */
+        RemoteViews customNotfView = new RemoteViews(getPackageName(), R.layout.notification_custom);
+        customNotfView.setTextViewText(R.id.notification_base_line_one, songItem.getTitle());
+        customNotfView.setTextViewText(R.id.notification_base_line_two, songItem.getArtist());
+        if(isSongPlaying()) {
+            // If song is playing then we display a pause button
+            customNotfView.setImageViewResource(R.id.notification_base_play, R.drawable.ic_pause_circle_filled_white_48dp);
+        } else {
+            // otherwise display play button
+            customNotfView.setImageViewResource(R.id.notification_base_play, R.drawable.ic_play_circle_filled_white_48dp);
+        }
+
+        Notification.Builder notfBuilder = new Notification.Builder(mContext)
+                .setContentTitle(songItem.getTitle())
+                .setContentText(songItem.getArtist())
+                .setContentIntent(pi)
+                .setAutoCancel(false)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setOngoing(true);
+
+
+        Notification notification = notfBuilder.build();
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(1080, notification);
+
     }
 }
